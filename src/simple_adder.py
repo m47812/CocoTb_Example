@@ -1,5 +1,5 @@
 import cocotb
-from cocotb.triggers import FallingEdge, RisingEdge, Combine, ClockCycles, Timer
+from cocotb.triggers import FallingEdge, ClockCycles
 from cocotb.clock import Clock
 
 DUT_LATENCY = 1
@@ -17,8 +17,7 @@ def ref_result_gen(a, b):
     return a + b
 
 async def monitor(dut, LATENCY, result_que):
-    for _ in range(LATENCY):
-        await FallingEdge(dut.clk)
+    await ClockCycles(dut.clk, LATENCY, rising=False)
     for _ in range(256*256):
         ref_value = result_que.pop(0)
         result_value = int(dut.c.value)
